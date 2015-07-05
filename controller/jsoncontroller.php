@@ -1,16 +1,14 @@
 <?php
 namespace OCA\ExifView\Controller;
 
-use \Exception;
+use OCP\IRequest;
+use OCP\AppFramework\Http;
+use OCP\AppFramework\Http\DataResponse;
+use OCP\AppFramework\Http\JsonResponse;
+use OCP\AppFramework\Controller;
 
-use \OCP\IRequest;
-use \OCP\AppFramework\Http;
-use \OCP\AppFramework\Http\DataResponse;
-use \OCP\AppFramework\Http\JsonResponse;
-use \OCP\AppFramework\Controller;
-
-use \OCA\ExifView\Storage\PhotoStorage;
-use \OCA\ExifView\Db\PhotoDBO;
+use OCA\ExifView\Service\PhotoStorage;
+use OCA\ExifView\Db\PhotoDBO;
 
 class JsonController extends Controller {
 
@@ -31,13 +29,27 @@ class JsonController extends Controller {
 	}
 
 	public function index() {
-
 		return new JsonResponse($this->storage->list_files());
 	}
 
 
-	public function show($fileid) {
-		
-		return new JsonResponse($this->storage->get_exifheader($fileid));
+	public function show($path) {
+//return new jsonResponse($path);
+		return new JsonResponse($this->storage->get_exifheader($path));
+	}
+
+	public function showgps($path) {
+//return new jsonResponse($path);
+		return new JsonResponse($this->storage->get_exif_location($path));
+	}
+
+	public function time($path) {
+//		$path=urldecode($path);
+		return new JsonResponse($this->storage->get_exiftime($path));
+	}
+
+	public function test($foo) {
+		return new JsonResponse($this->storage->test());
+//		return array('hoge');
 	}
 }

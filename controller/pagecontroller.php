@@ -45,9 +45,8 @@ class PageController extends Controller {
 	 * Simply method that posts back the payload of the request
 	 * @NoAdminRequired
 	 */
-	public function doEcho($echo) {
-		return new DataResponse(['echo' => $echo]);
-	}
-
+//	public function doEcho($echo) {
+//		return new DataResponse(['echo' => $echo]);
+//	}
 
 }

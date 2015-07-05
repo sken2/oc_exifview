@@ -17,13 +17,40 @@
  * The controller class has to be registered in the application.php file since
  * it's instantiated in there
  */
-return [
-	'routes' => [
-		['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
-		['name' => 'json#index', 'url' => '/img', 'verb' => 'GET'],
-		['name' => 'json#show', 'url' => '/img/{fileid}', 'verb' => 'GET'],
-//	], 
-//	'resources' => [
-//		'json' => ['url' => '/img/{fileid}']
-	]
-];
+return array(
+	'routes' => array(
+		array(
+			'name' => 'page#index',
+			'url' => '/p', 'verb' => 'GET'
+		),
+		array(
+			'name' => 'json#index',
+			'url' => '/show/',
+			'verb' => 'GET' 
+		),
+		array(
+			'name' => 'json#show',
+			'url' => '/show/{path}',
+			'verb' => 'GET',
+			'requirements' => array('path' => '.+')
+		),
+		array(
+			'name' => 'json#showgps',
+			'url' => '/showgps/{path}',
+			'verb' => 'GET',
+			'requirements' => array('path' => '.+')
+		),
+		array(
+			'name' => 'json#time',
+			'url' => '/time/{path}',
+			'verb' => 'GET',
+			'requirements' => array('path' => '.+')
+		),
+		array(
+			'name' => 'json#test',
+			'url' => '/test/{foo}',
+			'verb' => 'GET',
+			'requirements' => array('foo' => '.+')
+		),
+	)
+);

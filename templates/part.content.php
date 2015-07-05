@@ -1,13 +1,9 @@
-<p>Hello World <?php p($_['user']) ?></p>
-
-<p><button id="hello">click me</button></p>
-
-<p><textarea id="echo-content">
-	Send this as ajax
-</textarea></p>
-<p><button id="echo">Send ajax request</button></p>
-
-Ajax response: <div id="echo-result"></div>
-
-<p><button name="list">list</button></p>
-<div id="img-list"></div>
+<p>
+<button name="test">Test</button>
+<button name="list">list</button>
+</p>
+<div>
+<ul id="filelist">
+</ul>
+</div>
+<div id="map" style="width:500px;height:500px;"></div>

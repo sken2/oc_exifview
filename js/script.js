@@ -7,57 +7,117 @@
  * @author shi <shi@example.com>
  * @copyright shi 2015
  */
-
-(function ($, OC) {
+(function ($, OC, ol) {
 
 	$(document).ready(function () {
-		$('#hello').click(function () {
-			alert('Hello from your script file');
-		});
-
-		$('#echo').click(function () {
-			var url = OC.generateUrl('/apps/exifview/echo');
-			var data = {
-				echo: $('#echo-content').val()
-			};
-
-			$.post(url, data).success(function (response) {
-				$('#echo-result').text(response.echo);
-			});
-
-		});
-
 		$('button[name=list]').click(function() {
-			var url = OC.generateUrl('/apps/exifview/img');
 			var data='';
-			$.get(url, data). success(function (response) {
+			var url = OC.generateUrl('/apps/exifview/show');
+			$.get(url, data). done(function (response) {
 				console.log(response);
-				var table=$('#img-list')[0];
+				var table=$('#filelist')[0];
+				while (table.firstChild) {
+					table.removeChild(table.firstChild);
+				}
 				response.forEach(function (img){
 console.log(img.path);
-					var p = document.createElement('P');
-					var t = document.createTextNode(img.path);
-					table.appendChild(p);
-					p.appendChild(t);
-					p.setAttribute('fileid', img.fileid);
-//					p.appendChild(document.createTextNode(img.path));
-//					$('#img-list').add(t);
-//					table.appendChild(t);
-				});
-				$('#img-list p').click(function(){
-					var fileid=this.getAttribute('fileid');
-					console.log(fileid);
-					var url_id=url+"/"+fileid;
-					$.get(url_id, data).success(function(r){
-						console.log(r);
-					}).fail(function(r){
-						console.log('id_fail');
-					});
+					table.appendChild(createItem(img));
 				});
 			}).fail(function(r){
 				console.log('failed');
 			});
 		});
-	});
 
-})(jQuery, OC);
+		$('#filelist').click(function(evt){
+			var tgt = evt.target;
+			switch(tgt.nodeName) {
+			case 'SPAN':
+				var fileid = tgt.getAttribute('fileid');
+				var path = encodeURIComponent(tgt.firstChild.nodeValue);
+				var url = OC.generateUrl('/apps/exifview/show/')+path;
+				$.get(url, {}).done(function(r){
+					console.log(r);
+				}).fail(function(r){
+					console.log('id_fail');
+				});
+				break;
+			case 'BUTTON':
+				console.log(tgt);
+				switch (tgt.name) {
+				case 'get_time':
+					span = tgt.parentNode.firstChild;//!
+					var fileid = tgt.parentNode.getAttribute('fileid');
+					var path = encodeURIComponent(span.firstChild.nodeValue);//!
+					var url = OC.generateUrl('/apps/exifview/time/')+path;
+					$.get(url, {}).done(function(r){
+						console.log(r);
+					}).fail(function(r){
+						console.log('id_fail');
+					});
+					break;
+				case 'get_loc':
+					span = tgt.parentNode.firstChild;//!
+					var fileid = tgt.parentNode.getAttribute('fileid');
+					var path = encodeURIComponent(span.firstChild.nodeValue);//!
+					var url = OC.generateUrl('/apps/exifview/time/')+path;
+					$.get(url, {}).done(function(r){
+						console.log(r);
+						if(r) {
+							var url = OC.generateUrl('/apps/gpstracks/gpxmatch/')+r.FileDateTime;
+							$.get(url, {}).done(function(rr){
+								console.log(rr);
+								if(rr.length){
+									dispmap(rr[0]);
+								}
+							}).fail(function(xhr){
+								console.log(xhr);
+							});
+						}
+					}).fail(function(r){
+						console.log('id_fail');
+					});
+					break;
+				}
+				break;
+			default:
+				;
+			}
+		});
+
+		//for debug
+		$('button[name=test]').click(function(){
+			var url = OC.generateUrl('/apps/exifview/test/1');
+			$.get(url, {}).always(function(r){
+				console.log(r);
+			});
+		});
+	});
+			
+	function createItem(obj) {
+		var item = document.createElement('LI');
+		var pic_name = document.createElement('SPAN');
+		var pic_thumb = document.createElement('IMG');
+		var time_btn = document.createElement('BUTTON');
+		time_btn.setAttribute('name', 'get_time');
+		time_btn.appendChild(document.createTextNode('Time'));
+		var loc_btn = document.createElement('BUTTON');
+		loc_btn.setAttribute('name', 'get_loc');
+		loc_btn.appendChild(document.createTextNode('Location'));
+
+		item.appendChild(pic_name);
+		item.appendChild(time_btn);
+		item.appendChild(loc_btn);
+
+		if(obj){
+			pic_name.appendChild(document.createTextNode(obj.path));
+			item.setAttribute('fileid', obj.fileid);
+		}
+		return item;
+	}
+
+	function dispmap(coord) {
+		OCA.OwnLayer.open(coord.lon, coord.lat);
+		OCA.OwnLayer.plot('Picture Location', {lat:coord.lat, lon:coord.lon});
+	}
+
+})(jQuery, OC, ol);

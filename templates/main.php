@@ -2,7 +2,6 @@
 script('exifview', 'script');
 style('exifview', 'style');
 ?>
-
 <div id="app">
 	<div id="app-navigation">
 		<?php print_unescaped($this->inc('part.navigation')); ?>

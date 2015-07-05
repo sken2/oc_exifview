@@ -2,15 +2,15 @@
 
 namespace OCA\ExifView\AppInfo;
 
-use \OCP\AppFramework\App;
-//use \OCP\Files\Folder;
+use OCP\AppFramework\App;
+use OCP\Files\Filesystem;
 
-use \OCA\ExifView\Controller\PageController;
-use \OCA\ExifView\Controller\JsonController;
+use OCP\Db\IDbconnection;
 
-use \OCA\ExifView\Storage\PhotoStorage;
-use \OCA\ExifView\Db\PhotoDBO;
+use OCA\ExifView\Controller\PageController;
+use OCA\ExifView\Controller\JsonController;
 
+use OCA\ExifView\Service\PhotoStorage;
 
 class Applicaton extends App {
 
@@ -24,26 +24,9 @@ class Applicaton extends App {
 			return new PhotoStorage(
 				$c->query('AppName'),
 				$c->query('UserId'),
-				$c->query('UserStorage'),
-				$c->query('AppStorage'),
-				$c->query('PhotoDBO')
+				$c->query('ServerContainer')->getUserFolder(),
+				$c->query('ServerContainer')->getDBConnection()
 			);
-		});
-
-		$container->registerService('AppStorage', function ($c) {
-			return $c->query('ServerContainer')->getRootFolder();
-		});
-
-		$container->registerService('PhotoDBO', function ($c){
-			return new PhotoDBO(
-				$c->query('AppName'),
-				$c->query('UserId'),
-				$c->query('ServerContainer')->getDB()
-			);
-		});
-
-		$container->registerService('UserStorage', function ($c){
-			return $c->query('ServerContainer')->getUserFolder();
 		});
 
 		$container->registerService('JsonController', function($c){
