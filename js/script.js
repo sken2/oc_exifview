@@ -66,9 +66,7 @@ console.log(img.path);
 							var url = OC.generateUrl('/apps/gpstracks/gpxmatch/')+r.FileDateTime;
 							$.get(url, {}).done(function(rr){
 								console.log(rr);
-								if(rr.length){
-									dispmap(rr[0]);
-								}
+								dispmap(rr);
 							}).fail(function(xhr){
 								console.log(xhr);
 							});
@@ -115,9 +113,11 @@ console.log(img.path);
 		return item;
 	}
 
-	function dispmap(coord) {
-		OCA.OwnLayer.open(coord.lon, coord.lat);
-		OCA.OwnLayer.plot('Picture Location', {lat:coord.lat, lon:coord.lon});
+	function dispmap(points) {
+		var first = points.coordinates[0];
+		
+		OCA.OwnLayer.open(first);
+		OCA.OwnLayer.plot('Picture Location', points);
 	}
 
 })(jQuery, OC, ol);

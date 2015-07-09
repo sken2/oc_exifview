@@ -41,12 +41,4 @@ class PageController extends Controller {
 		return new TemplateResponse('exifview', 'main', $params);  // templates/main.php
 	}
 
-	/**
-	 * Simply method that posts back the payload of the request
-	 * @NoAdminRequired
-	 */
-//	public function doEcho($echo) {
-//		return new DataResponse(['echo' => $echo]);
-//	}
-
 }

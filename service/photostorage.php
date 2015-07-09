@@ -8,7 +8,8 @@ use OC\Files\View;
 use OC\Files\Filesystem;
 
 use OCP\IDbConnection;
-
+use OCA\OwnLayer\Lib\GeoJSON;
+use OCA\OwnLayer\Lib\GeoJSON\Crs;
 
 class PhotoStorage {
 
@@ -65,7 +66,6 @@ class PhotoStorage {
 
 	public function get_exiftime($path) {
 		try {
-
 			if(!$path) {
 				return false;
 			}
@@ -76,7 +76,7 @@ class PhotoStorage {
 			}
 			$timestr = $exif['DateTimeOriginal'];
 			$dt = new \DateTime($timestr, new \DateTimeZone('Asia/Tokyo'));
-			$epoch = $dt->format('U'); //!TZ did not came from file
+			$epoch = $dt->format('U'); //!TZ did not come from file
 			return array('FileDateTime'=> $epoch);
 		} catch (\Exception $e) {
 			throw new Exception('oops') ;
@@ -122,6 +122,10 @@ class PhotoStorage {
 	}
 
 	public function test() {
-		return $this->storage->getRoot();//that's returns /shi/files
+		$p = new GeoJSON('Point', [ 140.123, 35.234 ]);
+		$c = new Crs('name', 'urn:hoge');
+		$f = new GeoJSON('Feature', $p, $c);
+		return $f;
+//		return $this->storage->getRoot();//that's returns /shi/files
 	}
 }
